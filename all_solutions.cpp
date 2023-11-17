@@ -1,11 +1,13 @@
 #include <iostream>
+#include <utility>
+#include<vector>
 using namespace std;
 
 const int BOARD_SIZE = 3;
 const int EMPTY_CELL = 0;
 
 void printBoard(int board[][BOARD_SIZE]);
-bool solveSudoku(int board[][BOARD_SIZE], int cell);
+bool solveSudoku(int board[][BOARD_SIZE], int cell, int &solutioncount);
 bool isValid(int board[][BOARD_SIZE], int row, int col, int num);
 
 void printBoard(int board[][BOARD_SIZE]) {
@@ -29,9 +31,9 @@ bool solveSudoku(int board[][BOARD_SIZE], int cell, int &solutioncount) {
 
     if( cell == 9 ) {
         //prints solution then backtracks to find another
+        solutioncount++;
         printBoard(board);
         cout << "Solution " << solutioncount << endl << endl;
-        solutioncount++;
         return false;
     }
 
@@ -41,13 +43,10 @@ bool solveSudoku(int board[][BOARD_SIZE], int cell, int &solutioncount) {
 
     for(int i = 1; i <= 3; i++) {
         if(isValid(board, row, col, i)) {
-            cout << "Passed isValid" << endl;
             board[row][col] = i;
-            
             if(solveSudoku(board, cell + 1, solutioncount)) {
                 return true;
             }
-            cout << "Setting back to empty" << endl;
             //sets back to zero if the above returns false
             board[row][col] = EMPTY_CELL;
         }
@@ -69,7 +68,7 @@ bool isValid(int board[][BOARD_SIZE], int row, int col, int num) {
             return false;
         }
     }
-    
+
     return true;
 }
 
@@ -82,17 +81,24 @@ int main() {
     };
 
     int board2[BOARD_SIZE][BOARD_SIZE] = {
-       {EMPTY_CELL, EMPTY_CELL, EMPTY_CELL}, 
+       {EMPTY_CELL, EMPTY_CELL, EMPTY_CELL},
        {1, EMPTY_CELL, EMPTY_CELL}, 
        {EMPTY_CELL, 3, EMPTY_CELL} 
+    };
 
+    int board3[BOARD_SIZE][BOARD_SIZE] = {
+       {EMPTY_CELL, EMPTY_CELL, EMPTY_CELL},
+       {1, EMPTY_CELL, EMPTY_CELL}, 
+       {EMPTY_CELL, EMPTY_CELL, EMPTY_CELL} 
     }; 
 
-    int solutioncount = 1;
+    int solutioncount = 0;
 
     solveSudoku(board1, 0, solutioncount);
-    solutioncount = 1;
+    solutioncount = 0;
     solveSudoku(board2, 0, solutioncount);
+    solutioncount = 0;
+    solveSudoku(board3, 0, solutioncount);
 
     return 0;
 }
